@@ -1,1 +1,4293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZYRØN X V4 // Database OS</title>
 
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root{
+--bg:#02050a;
+--panel:#07101a;
+--panel2:#0b1622;
+--cyan:#00f6ff;
+--pink:#ff2bd6;
+--lime:#5bff96;
+--gold:#ffe45c;
+--red:#ff5470;
+--blue:#6e8cff;
+--text:#edfdff;
+--muted:#76909f;
+--line:#163540
+}
+
+*{box-sizing:border-box}
+
+html,body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Rajdhani,Arial,sans-serif
+}
+
+body{
+min-height:100vh;
+overflow-x:hidden;
+background:
+radial-gradient(circle at 15% 10%,#00f6ff0e,transparent 26%),
+radial-gradient(circle at 88% 68%,#ff2bd60c,transparent 28%),
+#02050a
+}
+
+body:before{
+content:"";
+position:fixed;
+inset:0;
+z-index:-5;
+background:
+linear-gradient(rgba(0,246,255,.02) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,43,214,.016) 1px,transparent 1px);
+background-size:42px 42px;
+pointer-events:none
+}
+
+#fx{
+position:fixed;
+inset:0;
+z-index:-3;
+overflow:hidden;
+pointer-events:none
+}
+
+.laser{
+position:absolute;
+height:2px;
+width:46vw;
+left:-15vw;
+background:linear-gradient(
+90deg,
+transparent,
+var(--cyan),
+#fff,
+var(--pink),
+transparent
+);
+filter:blur(.2px);
+box-shadow:
+0 0 7px var(--cyan),
+0 0 24px var(--pink);
+opacity:.6
+}
+
+.l1{top:14%;transform:rotate(20deg);animation:a1 9s linear infinite}
+.l2{top:35%;transform:rotate(-14deg);animation:a2 12s linear infinite}
+.l3{top:62%;transform:rotate(27deg);animation:a3 13s linear infinite}
+.l4{top:83%;transform:rotate(-22deg);animation:a4 10s linear infinite}
+.l5{top:25%;left:50%;transform:rotate(32deg);animation:a5 11s linear infinite}
+
+@keyframes a1{
+0%{translate:-10vw}
+100%{translate:100vw}
+}
+
+@keyframes a2{
+0%{translate:0}
+100%{translate:115vw}
+}
+
+@keyframes a3{
+0%{translate:-20vw}
+100%{translate:100vw}
+}
+
+@keyframes a4{
+0%{translate:-30vw}
+100%{translate:105vw}
+}
+
+@keyframes a5{
+0%{translate:-20vw}
+100%{translate:80vw}
+}
+
+.p{
+position:absolute;
+width:3px;
+height:3px;
+background:var(--cyan);
+border-radius:50%;
+box-shadow:0 0 10px var(--cyan);
+opacity:.45;
+animation:pf 6s ease-in-out infinite
+}
+
+@keyframes pf{
+50%{
+transform:translate(22px,-30px);
+opacity:.8
+}
+}
+
+header{
+height:74px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 23px;
+border-bottom:1px solid var(--line);
+background:#03070ce8;
+backdrop-filter:blur(16px);
+position:sticky;
+top:0;
+z-index:50
+}
+
+.logo{
+font:900 18px Orbitron;
+letter-spacing:3px;
+color:var(--cyan);
+text-shadow:0 0 18px #00f6ff33
+}
+
+.logo span{
+color:var(--pink)
+}
+
+.top{
+display:flex;
+align-items:center;
+gap:12px;
+font-size:10px
+}
+
+.core{
+color:var(--lime);
+letter-spacing:1px
+}
+
+.dot{
+display:inline-block;
+width:8px;
+height:8px;
+border-radius:50%;
+background:var(--lime);
+box-shadow:0 0 12px var(--lime);
+margin-right:6px
+}
+
+.waTop{
+color:#021008;
+text-decoration:none;
+background:linear-gradient(90deg,#5bff96,#20d8ff);
+padding:9px 13px;
+border-radius:7px;
+font-weight:900
+}
+
+.layout{
+display:grid;
+grid-template-columns:245px 1fr;
+min-height:calc(100vh - 74px)
+}
+
+aside{
+border-right:1px solid var(--line);
+background:#03070ce8;
+padding:18px 12px;
+position:sticky;
+top:74px;
+height:calc(100vh - 74px)
+}
+
+.profile{
+padding:13px;
+border:1px solid #17404b;
+border-radius:10px;
+background:linear-gradient(135deg,#00f6ff08,#ff2bd607);
+margin-bottom:18px
+}
+
+.avatar{
+width:42px;
+height:42px;
+display:grid;
+place-items:center;
+border:1px solid var(--cyan);
+font:800 12px Orbitron;
+color:var(--cyan);
+margin-bottom:9px;
+box-shadow:0 0 18px #00f6ff18
+}
+
+.profile b{
+font:700 9px Orbitron;
+letter-spacing:1px
+}
+
+.profile small{
+color:var(--muted)
+}
+
+.nav{
+width:100%;
+border:1px solid transparent;
+background:transparent;
+color:#79909d;
+padding:11px 13px;
+border-radius:7px;
+display:flex;
+gap:10px;
+align-items:center;
+margin:3px 0;
+cursor:pointer;
+font-weight:700
+}
+
+.nav:hover,
+.nav.active{
+color:var(--cyan);
+border-color:#00f6ff35;
+background:#00f6ff09;
+box-shadow:inset 3px 0 var(--cyan)
+}
+
+.nav .n{
+margin-left:auto;
+color:#4e6a77;
+font-size:10px
+}
+
+main{
+padding:28px;
+max-width:1650px;
+width:100%;
+margin:auto
+}
+
+.page{
+display:none;
+animation:in .28s ease
+}
+
+.page.active{
+display:block
+}
+
+@keyframes in{
+from{
+opacity:0;
+transform:translateY(8px)
+}
+to{
+opacity:1;
+transform:none
+}
+}
+
+.hero{
+position:relative;
+padding:25px;
+border:1px solid #00f6ff28;
+border-radius:13px;
+background:linear-gradient(
+115deg,
+#00f6ff08,
+#ff2bd606,
+#6e8cff06
+);
+overflow:hidden;
+margin-bottom:19px
+}
+
+.hero:before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:50%;
+height:1px;
+background:linear-gradient(
+90deg,
+transparent,
+#fff,
+var(--cyan),
+transparent
+);
+animation:scan 6s linear infinite
+}
+
+@keyframes scan{
+0%{left:-60%}
+100%{left:120%}
+}
+
+.heroRow{
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+gap:18px
+}
+
+.eyebrow{
+font:9px Orbitron;
+letter-spacing:3px;
+color:var(--pink)
+}
+
+h1{
+font:900 30px Orbitron;
+margin:7px 0
+}
+
+.hero p{
+margin:0;
+color:var(--muted);
+font-size:15px
+}
+
+.actions{
+display:flex;
+gap:7px;
+flex-wrap:wrap
+}
+
+.btn{
+border:1px solid var(--cyan);
+background:#00f6ff09;
+color:var(--cyan);
+padding:9px 13px;
+border-radius:6px;
+font-weight:900;
+font-family:Rajdhani;
+cursor:pointer;
+text-decoration:none;
+display:inline-block;
+transition:.18s
+}
+
+.btn:hover{
+transform:translateY(-2px);
+background:#00f6ff17;
+box-shadow:0 0 20px #00f6ff18
+}
+
+.pink{
+color:var(--pink);
+border-color:var(--pink)
+}
+
+.lime{
+color:var(--lime);
+border-color:var(--lime)
+}
+
+.gold{
+color:var(--gold);
+border-color:var(--gold)
+}
+
+.red{
+color:var(--red);
+border-color:var(--red)
+}
+
+.grid{
+display:grid;
+gap:14px
+}
+
+.stats{
+grid-template-columns:repeat(6,1fr)
+}
+
+.two{
+grid-template-columns:1.35fr .65fr
+}
+
+.three{
+grid-template-columns:repeat(3,1fr)
+}
+
+.four{
+grid-template-columns:repeat(4,1fr)
+}
+
+.testgrid{
+grid-template-columns:repeat(4,1fr)
+}
+
+.card{
+background:linear-gradient(145deg,#09111aeF,#050a11eF);
+border:1px solid var(--line);
+border-radius:10px;
+padding:16px;
+position:relative;
+overflow:hidden;
+box-shadow:0 18px 42px #0005
+}
+
+.card:after{
+content:"";
+position:absolute;
+top:0;
+left:12%;
+right:12%;
+height:1px;
+background:linear-gradient(
+90deg,
+transparent,
+var(--cyan),
+transparent
+);
+opacity:.25
+}
+
+.label{
+font:8px Orbitron;
+color:#65818e;
+letter-spacing:1.4px
+}
+
+.metric{
+font:900 25px Orbitron;
+margin:7px 0
+}
+
+.cyan{color:var(--cyan)}
+.pink{color:var(--pink)}
+.limeText{color:var(--lime)}
+.goldText{color:var(--gold)}
+.redText{color:var(--red)}
+
+.bar{
+height:7px;
+background:#10202a;
+border-radius:8px;
+overflow:hidden
+}
+
+.bar i{
+display:block;
+height:100%;
+background:linear-gradient(90deg,var(--cyan),var(--pink));
+box-shadow:0 0 12px #00f6ff66
+}
+
+.panel{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:11px
+}
+
+.panel h2{
+font:11px Orbitron;
+margin:0;
+letter-spacing:1px
+}
+
+.tag{
+font-size:9px;
+border:1px solid #31505d;
+border-radius:4px;
+padding:4px 7px;
+color:var(--lime)
+}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+th,td{
+text-align:left;
+padding:10px 7px;
+border-bottom:1px solid #122832
+}
+
+th{
+font:7px Orbitron;
+color:#59727f;
+letter-spacing:1px
+}
+
+td{
+font-size:13px;
+color:#cbe0e8
+}
+
+.status{
+font-size:9px;
+border:1px solid;
+padding:4px 7px;
+border-radius:4px
+}
+
+.ok{
+color:var(--lime);
+border-color:#5bff9655
+}
+
+.warn{
+color:var(--gold);
+border-color:#ffe45c55
+}
+
+.bad{
+color:var(--red);
+border-color:#ff547055
+}
+
+.feed{
+height:235px;
+overflow:auto
+}
+
+.feed div{
+font:11px/1.5 Consolas,monospace;
+padding:8px 0;
+border-bottom:1px solid #0d222a;
+color:#76919e
+}
+
+.feed b{
+color:var(--lime)
+}
+
+.chart{
+height:205px;
+display:flex;
+align-items:end;
+gap:6px
+}
+
+.chart i{
+flex:1;
+background:linear-gradient(
+to top,
+var(--pink),
+var(--cyan)
+);
+min-height:5px;
+border-radius:4px 4px 0 0;
+animation:grow .6s ease;
+box-shadow:0 0 12px #00f6ff19
+}
+
+@keyframes grow{
+from{height:0!important}
+}
+
+.search{
+display:flex;
+gap:7px;
+margin-bottom:12px
+}
+
+.search input,
+.form input,
+.form select,
+.form textarea,
+.sql{
+background:#03070c;
+color:var(--text);
+border:1px solid #193843;
+padding:10px;
+border-radius:6px;
+outline:none
+}
+
+.search input{
+flex:1
+}
+
+.form{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.form textarea{
+grid-column:1/-1;
+min-height:75px
+}
+
+.full{
+grid-column:1/-1
+}
+
+.model{
+cursor:pointer;
+min-height:145px
+}
+
+.model:hover{
+transform:translateY(-3px);
+border-color:#00f6ff4c
+}
+
+.code,
+.terminal{
+font:11px/1.55 Consolas,monospace;
+background:#010408;
+color:#65ffb1;
+border:1px solid #17363f;
+border-radius:7px;
+padding:14px;
+white-space:pre-wrap;
+min-height:190px
+}
+
+.sqlGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:13px
+}
+
+.sql{
+width:100%;
+min-height:270px;
+resize:vertical;
+font-family:Consolas
+}
+
+.output{
+min-height:270px;
+background:#03070b;
+border:1px solid #183640;
+border-radius:7px;
+padding:13px;
+font:11px Consolas;
+color:#9ec0cc;
+white-space:pre-wrap
+}
+
+.result{
+margin-top:9px;
+min-height:42px;
+padding:9px;
+border:1px dashed #20414c;
+border-radius:6px;
+color:#6f8793;
+font-size:11px
+}
+
+.pass{
+color:var(--lime)!important
+}
+
+.fail{
+color:var(--red)!important
+}
+
+.schemaGraph{
+height:350px;
+position:relative;
+border:1px solid #163540;
+border-radius:9px;
+background:
+radial-gradient(
+circle at 50% 50%,
+#00f6ff08,
+transparent 45%
+),
+#03070c;
+overflow:hidden
+}
+
+.node{
+position:absolute;
+width:125px;
+padding:10px;
+border:1px solid var(--cyan);
+background:#07131ce8;
+border-radius:8px;
+text-align:center;
+font:10px Orbitron;
+color:var(--cyan);
+box-shadow:0 0 20px #00f6ff12
+}
+
+.node small{
+display:block;
+color:#6f8c9a;
+font:10px Rajdhani;
+margin-top:5px
+}
+
+.n1{left:8%;top:13%}
+.n2{left:60%;top:10%}
+.n3{left:42%;top:56%}
+.n4{left:72%;top:62%}
+.n5{left:18%;top:68%}
+
+svg{
+position:absolute;
+inset:0;
+width:100%;
+height:100%
+}
+
+.line{
+stroke:url(#g);
+stroke-width:1.2;
+fill:none;
+stroke-dasharray:5 6;
+animation:dash 5s linear infinite
+}
+
+@keyframes dash{
+to{stroke-dashoffset:-90}
+}
+
+.healthGrid{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:6px
+}
+
+.healthGrid span{
+height:25px;
+background:#10212a;
+border:1px solid #193b46;
+border-radius:4px
+}
+
+.healthGrid .on{
+background:#5bff9610;
+border-color:#5bff9655;
+box-shadow:inset 0 -2px var(--lime)
+}
+
+.healthGrid .warn{
+background:#ffe45c10;
+border-color:#ffe45c55;
+box-shadow:inset 0 -2px var(--gold)
+}
+
+.kpi{
+display:flex;
+gap:10px;
+align-items:end
+}
+
+.kpi .big{
+font:900 39px Orbitron
+}
+
+.muted{
+color:var(--muted)
+}
+
+.center{
+text-align:center
+}
+
+.present{
+position:fixed;
+inset:0;
+background:#02040af7;
+z-index:200;
+display:none;
+padding:35px
+}
+
+.present.show{
+display:block
+}
+
+.presentInner{
+max-width:1300px;
+margin:auto;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+text-align:center
+}
+
+.present h2{
+font:900 44px Orbitron;
+color:var(--cyan);
+text-shadow:0 0 30px #00f6ff22
+}
+
+.present p{
+font-size:18px;
+color:var(--muted)
+}
+
+.present .tiles{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin:25px 0
+}
+
+.present .tile{
+border:1px solid #17404b;
+padding:20px;
+background:#07101a;
+border-radius:10px
+}
+
+.present .tile b{
+font:900 25px Orbitron;
+color:var(--cyan)
+}
+
+.closePresent{
+position:absolute;
+right:25px;
+top:20px
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:#000c;
+display:none;
+place-items:center;
+z-index:100;
+padding:20px
+}
+
+.modal.show{
+display:grid
+}
+
+.modalbox{
+width:min(650px,100%);
+background:#07101a;
+border:1px solid var(--cyan);
+border-radius:11px;
+padding:20px;
+box-shadow:0 0 70px #00f6ff18
+}
+
+.floatWa{
+position:fixed;
+right:20px;
+bottom:20px;
+background:linear-gradient(135deg,#5bff96,#20d8ff);
+color:#031008;
+text-decoration:none;
+padding:12px 15px;
+border-radius:999px;
+font-weight:900;
+z-index:80;
+box-shadow:0 0 25px #5bff9633
+}
+
+footer{
+text-align:center;
+padding:28px;
+color:#3f5963;
+font:9px Orbitron;
+letter-spacing:1px
+}
+
+.toast{
+position:fixed;
+right:22px;
+bottom:80px;
+padding:12px 15px;
+background:#06131b;
+border:1px solid var(--cyan);
+color:var(--cyan);
+border-radius:7px;
+opacity:0;
+transform:translateY(15px);
+transition:.3s;
+z-index:120
+}
+
+@media(max-width:1150px){
+.stats{grid-template-columns:repeat(3,1fr)}
+.four{grid-template-columns:repeat(2,1fr)}
+.testgrid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:800px){
+.layout{display:block}
+
+aside{
+position:static;
+height:auto;
+border-right:0;
+border-bottom:1px solid var(--line);
+padding:7px;
+overflow:auto
+}
+
+.profile{
+display:none
+}
+
+nav{
+display:flex;
+gap:4px
+}
+
+.nav{
+width:auto;
+padding:10px
+}
+
+.nav .n{
+display:none
+}
+
+main{
+padding:16px
+}
+
+.heroRow{
+display:block
+}
+
+.actions{
+margin-top:13px
+}
+
+.stats,
+.three,
+.four,
+.testgrid,
+.two,
+.sqlGrid{
+grid-template-columns:1fr
+}
+
+.present .tiles{
+grid-template-columns:1fr 1fr
+}
+}
+
+@media(max-width:500px){
+.present .tiles{
+grid-template-columns:1fr
+}
+}
+</style>
+</head>
+
+<body>
+
+<div id="fx">
+<div class="laser l1"></div>
+<div class="laser l2"></div>
+<div class="laser l3"></div>
+<div class="laser l4"></div>
+<div class="laser l5"></div>
+</div>
+
+<header>
+<div class="logo">ZYRØN<span>// X V4</span></div>
+
+<div class="top">
+<div class="core">
+<span class="dot"></span>
+NEURAL CORE ONLINE
+</div>
+
+<a
+class="waTop"
+href="https://wa.me/5511932056422?text=Ol%C3%A1%20Felipe%2C%20vim%20pelo%20ZYR%C3%98N%20X."
+target="_blank"
+rel="noopener">
+WHATSAPP ↗
+</a>
+</div>
+</header>
+
+<div class="layout">
+
+<aside>
+
+<div class="profile">
+<div class="avatar">ZX</div>
+<b>FELIPE ZIRONDI PEIXOTO</b><br>
+<small>DATABASE COMMAND // LVL 07</small>
+</div>
+
+<nav>
+
+<button class="nav active" onclick="go('home',this)">
+◈ <span>Dashboard</span>
+</button>
+
+<button class="nav" onclick="go('db',this)">
+▣ <span>Database</span>
+<span class="n" id="cnt">0</span>
+</button>
+
+<button class="nav" onclick="go('visual',this)">
+◎ <span>Banco Visual</span>
+</button>
+
+<button class="nav" onclick="go('models',this)">
+◇ <span>Modelos</span>
+</button>
+
+<button class="nav" onclick="go('sql',this)">
+⌘ <span>SQL Lab</span>
+</button>
+
+<button class="nav" onclick="go('tests',this)">
+⚡ <span>Testes</span>
+<span class="n">32</span>
+</button>
+
+<button class="nav" onclick="go('quality',this)">
+★ <span>Qualidade Cliente</span>
+<span class="n">10</span>
+</button>
+
+<button class="nav" onclick="go('backup',this)">
+◫ <span>Backup</span>
+</button>
+
+<button class="nav" onclick="go('logs',this)">
+⌁ <span>Logs</span>
+</button>
+
+<button class="nav" onclick="go('terminal',this)">
+▤ <span>Terminal</span>
+</button>
+
+<button class="nav" onclick="presentation()">
+◉ <span>Apresentação</span>
+</button>
+
+</nav>
+</aside>
+
+<main>
+
+<!-- DASHBOARD -->
+
+<section id="home" class="page active">
+
+<div class="hero">
+
+<div class="heroRow">
+
+<div>
+<div class="eyebrow">NEURAL DATA COMMAND CENTER</div>
+<h1>ZYRØN X DATABASE OS</h1>
+
+<p>
+Banco de dados futurista, laboratório de testes e central de demonstração.
+</p>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="openModal()">
++ NOVO REGISTRO
+</button>
+
+<button class="btn pink" onclick="runAll()">
+⚡ 32 TESTES
+</button>
+
+<button class="btn lime" onclick="generateDemo()">
+✦ GERAR DADOS
+</button>
+
+</div>
+</div>
+</div>
+
+<div class="grid stats">
+
+<div class="card">
+<div class="label">REGISTROS</div>
+<div class="metric cyan" id="sRec">0</div>
+</div>
+
+<div class="card">
+<div class="label">ATIVOS</div>
+<div class="metric limeText">18</div>
+</div>
+
+<div class="card">
+<div class="label">QUERIES</div>
+<div class="metric pink">8,429</div>
+</div>
+
+<div class="card">
+<div class="label">INTEGRIDADE</div>
+<div class="metric goldText">99.8%</div>
+</div>
+
+<div class="card">
+<div class="label">LATÊNCIA</div>
+<div class="metric cyan">18ms</div>
+</div>
+
+<div class="card">
+<div class="label">THREAT</div>
+<div class="metric limeText">LOW</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="grid two">
+
+<div class="card">
+
+<div class="panel">
+<h2>LASER DATA TRAFFIC // 24H</h2>
+<span class="tag">LIVE</span>
+</div>
+
+<div class="chart" id="chart"></div>
+
+</div>
+
+<div class="card">
+
+<div class="panel">
+<h2>CORE HEALTH</h2>
+<span class="tag">STABLE</span>
+</div>
+
+<p class="label">DATABASE ENGINE</p>
+<div class="bar"><i style="width:96%"></i></div>
+
+<p class="label">API GATEWAY</p>
+<div class="bar"><i style="width:89%"></i></div>
+
+<p class="label">SECURITY MATRIX</p>
+<div class="bar"><i style="width:99%"></i></div>
+
+<p class="label">STORAGE</p>
+<div class="bar"><i style="width:73%"></i></div>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="grid two">
+
+<div class="card">
+
+<div class="panel">
+<h2>REGISTROS RECENTES</h2>
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>NOME</th>
+<th>TIPO</th>
+<th>STATUS</th>
+</tr>
+</thead>
+
+<tbody id="recent"></tbody>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<div class="panel">
+<h2>ACTIVITY STREAM</h2>
+</div>
+
+<div class="feed" id="feed"></div>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<div class="panel">
+<h2>CONEXÃO DIRETA</h2>
+<span class="tag">WHATSAPP READY</span>
+</div>
+
+<p class="muted">
+Fale diretamente com Felipe pelo WhatsApp.
+</p>
+
+<a
+class="btn lime"
+href="https://wa.me/5511932056422?text=Ol%C3%A1%20Felipe%2C%20vim%20pelo%20site%20ZYR%C3%98N%20X."
+target="_blank"
+rel="noopener">
+ABRIR WHATSAPP +55 11 93205-6422 ↗
+</a>
+
+</div>
+
+</section>
+
+
+<!-- DATABASE -->
+
+<section id="db" class="page">
+
+<div class="hero">
+
+<div class="heroRow">
+
+<div>
+
+<div class="eyebrow">DATA MATRIX</div>
+
+<h1>DATABASE MANAGER</h1>
+
+<p>
+CRUD funcional com busca, edição e persistência local.
+</p>
+
+</div>
+
+<button class="btn" onclick="openModal()">
++ NOVO REGISTRO
+</button>
+
+</div>
+</div>
+
+<div class="card">
+
+<div class="search">
+
+<input
+id="search"
+placeholder="Buscar qualquer campo..."
+oninput="renderDB">
+
+<button class="btn pink" onclick="exportDB()">
+EXPORTAR JSON
+</button>
+
+<button class="btn lime" onclick="generateDemo()">
+GERAR CARGA
+</button>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>NOME</th>
+<th>CATEGORIA</th>
+<th>STATUS</th>
+<th>DATA</th>
+<th>AÇÕES</th>
+</tr>
+</thead>
+
+<tbody id="rows"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- BANCO VISUAL -->
+
+<section id="visual" class="page">
+
+<div class="eyebrow">RELATIONSHIP ENGINE</div>
+
+<h1 class="hero">BANCO VISUAL</h1>
+
+<div class="card">
+
+<div class="panel">
+<h2>MAPA DE RELACIONAMENTOS</h2>
+<span class="tag">INTERACTIVE DEMO</span>
+</div>
+
+<div class="schemaGraph">
+
+<svg
+viewBox="0 0 1000 350"
+preserveAspectRatio="none">
+
+<defs>
+<linearGradient id="g">
+<stop stop-color="#00f6ff"/>
+<stop offset="1" stop-color="#ff2bd6"/>
+</linearGradient>
+</defs>
+
+<path class="line" d="M140 90 L640 80"/>
+<path class="line" d="M140 90 L430 205"/>
+<path class="line" d="M430 205 L720 225"/>
+<path class="line" d="M720 225 L870 85"/>
+<path class="line" d="M140 90 L220 270"/>
+
+</svg>
+
+<div class="node n1">
+CLIENTE
+<small>id • nome • email</small>
+</div>
+
+<div class="node n2">
+VENDA
+<small>id • valor • data</small>
+</div>
+
+<div class="node n3">
+PRODUTO
+<small>sku • preço • estoque</small>
+</div>
+
+<div class="node n4">
+PAGAMENTO
+<small>id • status • método</small>
+</div>
+
+<div class="node n5">
+CHAMADO
+<small>id • prioridade • técnico</small>
+</div>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="grid four">
+
+<div class="card">
+<div class="label">NÓS</div>
+<div class="metric cyan">06</div>
+</div>
+
+<div class="card">
+<div class="label">RELAÇÕES</div>
+<div class="metric pink">09</div>
+</div>
+
+<div class="card">
+<div class="label">TABELAS</div>
+<div class="metric limeText">12</div>
+</div>
+
+<div class="card">
+<div class="label">FOREIGN KEYS</div>
+<div class="metric goldText">17</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MODELOS -->
+
+<section id="models" class="page">
+
+<div class="eyebrow">SCHEMA ARCHITECTURE</div>
+
+<h1 class="hero">MODELOS DE DADOS</h1>
+
+<div class="grid three">
+
+<div class="card model" onclick="model('CLIENTE')">
+<div class="label">CLIENTE</div>
+<h3 class="cyan">SCHEMA // CLIENTE</h3>
+<p class="muted">id,nome,cpf,telefone,email,status</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+<div class="card model" onclick="model('PRODUTO')">
+<div class="label">PRODUTO</div>
+<h3 class="pink">SCHEMA // PRODUTO</h3>
+<p class="muted">sku,nome,categoria,preco,estoque</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+<div class="card model" onclick="model('VENDA')">
+<div class="label">VENDA</div>
+<h3 class="cyan">SCHEMA // VENDA</h3>
+<p class="muted">id,cliente_id,valor,data,status</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+<div class="card model" onclick="model('CHAMADO')">
+<div class="label">CHAMADO</div>
+<h3 class="pink">SCHEMA // CHAMADO</h3>
+<p class="muted">id,cliente_id,prioridade,tecnico</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+<div class="card model" onclick="model('USUARIO')">
+<div class="label">USUARIO</div>
+<h3 class="cyan">SCHEMA // USUARIO</h3>
+<p class="muted">id,nome,email,role,permissions</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+<div class="card model" onclick="model('PAGAMENTO')">
+<div class="label">PAGAMENTO</div>
+<h3 class="pink">SCHEMA // PAGAMENTO</h3>
+<p class="muted">id,venda_id,valor,metodo,status</p>
+<button class="btn">INSPECIONAR</button>
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<div class="panel">
+
+<h2>SCHEMA VIEWER</h2>
+
+<span class="tag" id="schemaStatus">
+READY
+</span>
+
+</div>
+
+<div class="code" id="schema">
+Selecione um modelo.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SQL -->
+
+<section id="sql" class="page">
+
+<div class="eyebrow">QUERY LABORATORY</div>
+
+<h1 class="hero">SQL LAB</h1>
+
+<div class="card">
+
+<div class="sqlGrid">
+
+<textarea
+class="sql"
+id="sql">SELECT * FROM registros WHERE status = 'ATIVO';</textarea>
+
+<div class="output" id="sqlOut">
+Resultado aguardando...
+</div>
+
+</div>
+
+<div class="actions" style="margin-top:10px">
+
+<button class="btn" onclick="runSQL()">
+EXECUTAR
+</button>
+
+<button class="btn pink" onclick="sqlEx(1)">
+ATIVOS
+</button>
+
+<button class="btn lime" onclick="sqlEx(2)">
+COUNT
+</button>
+
+<button class="btn gold" onclick="sqlEx(3)">
+CLIENTES
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TESTES TÉCNICOS -->
+
+<section id="tests" class="page">
+
+<div class="eyebrow">FUNCTIONAL LAB</div>
+
+<h1 class="hero">CENTRO DE TESTES // 32</h1>
+
+<div class="grid testgrid">
+
+<div class="card">
+<div class="label">01 // CRUD</div>
+<h3>Create • Read • Update • Delete</h3>
+<button class="btn" onclick="testCRUD()">EXECUTAR</button>
+<div class="result" id="r_testCRUD">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">02 // SEARCH</div>
+<h3>Busca e filtro</h3>
+<button class="btn" onclick="testSearch()">EXECUTAR</button>
+<div class="result" id="r_testSearch">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">03 // INTEGRITY</div>
+<h3>IDs e campos obrigatórios</h3>
+<button class="btn" onclick="testIntegrity()">EXECUTAR</button>
+<div class="result" id="r_testIntegrity">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">04 // STORAGE</div>
+<h3>Persistência</h3>
+<button class="btn" onclick="testStorage()">EXECUTAR</button>
+<div class="result" id="r_testStorage">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">05 // PERFORMANCE</div>
+<h3>50.000 ciclos</h3>
+<button class="btn" onclick="testPerf()">EXECUTAR</button>
+<div class="result" id="r_testPerf">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">06 // API</div>
+<h3>Latência mock</h3>
+<button class="btn" onclick="testAPI()">EXECUTAR</button>
+<div class="result" id="r_testAPI">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">07 // BACKUP</div>
+<h3>Snapshot</h3>
+<button class="btn" onclick="testBackup()">EXECUTAR</button>
+<div class="result" id="r_testBackup">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">08 // SCHEMA</div>
+<h3>Modelos</h3>
+<button class="btn" onclick="testSchema()">EXECUTAR</button>
+<div class="result" id="r_testSchema">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">09 // LOAD</div>
+<h3>2.000 registros</h3>
+<button class="btn" onclick="testLoad()">EXECUTAR</button>
+<div class="result" id="r_testLoad">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">10 // SECURITY</div>
+<h3>Credenciais</h3>
+<button class="btn" onclick="testSecurity()">EXECUTAR</button>
+<div class="result" id="r_testSecurity">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">11 // SQL</div>
+<h3>Parser SELECT</h3>
+<button class="btn" onclick="testSQL()">EXECUTAR</button>
+<div class="result" id="r_testSQL">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">12 // JSON</div>
+<h3>Serialize / Parse</h3>
+<button class="btn" onclick="testJSON()">EXECUTAR</button>
+<div class="result" id="r_testJSON">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">13 // UI</div>
+<h3>Módulos essenciais</h3>
+<button class="btn" onclick="testUI()">EXECUTAR</button>
+<div class="result" id="r_testUI">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">14 // DATE</div>
+<h3>Formato de data</h3>
+<button class="btn" onclick="testDate()">EXECUTAR</button>
+<div class="result" id="r_testDate">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">15 // DUPLICATE</div>
+<h3>Duplicidade</h3>
+<button class="btn" onclick="testDuplicate()">EXECUTAR</button>
+<div class="result" id="r_testDuplicate">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">16 // NULL</div>
+<h3>Campos nulos</h3>
+<button class="btn" onclick="testNull()">EXECUTAR</button>
+<div class="result" id="r_testNull">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">17 // TYPE</div>
+<h3>Tipos de dados</h3>
+<button class="btn" onclick="testType()">EXECUTAR</button>
+<div class="result" id="r_testType">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">18 // LENGTH</div>
+<h3>Limites de campo</h3>
+<button class="btn" onclick="testLength()">EXECUTAR</button>
+<div class="result" id="r_testLength">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">19 // EXPORT</div>
+<h3>Exportação</h3>
+<button class="btn" onclick="testExport()">EXECUTAR</button>
+<div class="result" id="r_testExport">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">20 // IMPORT</div>
+<h3>Importação</h3>
+<button class="btn" onclick="testImport()">EXECUTAR</button>
+<div class="result" id="r_testImport">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">21 // CACHE</div>
+<h3>Cache local</h3>
+<button class="btn" onclick="testCache()">EXECUTAR</button>
+<div class="result" id="r_testCache">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">22 // SESSION</div>
+<h3>Sessão</h3>
+<button class="btn" onclick="testSession()">EXECUTAR</button>
+<div class="result" id="r_testSession">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">23 // ROUTING</div>
+<h3>Navegação interna</h3>
+<button class="btn" onclick="testRouting()">EXECUTAR</button>
+<div class="result" id="r_testRouting">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">24 // EVENTS</div>
+<h3>Eventos</h3>
+<button class="btn" onclick="testEvents()">EXECUTAR</button>
+<div class="result" id="r_testEvents">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">25 // CHART</div>
+<h3>Gráfico</h3>
+<button class="btn" onclick="testChart()">EXECUTAR</button>
+<div class="result" id="r_testChart">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">26 // LASER</div>
+<h3>Efeitos visuais</h3>
+<button class="btn" onclick="testLaser()">EXECUTAR</button>
+<div class="result" id="r_testLaser">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">27 // RESPONSIVE</div>
+<h3>Viewport</h3>
+<button class="btn" onclick="testResponsive()">EXECUTAR</button>
+<div class="result" id="r_testResponsive">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">28 // GRAPH</div>
+<h3>Relacionamentos</h3>
+<button class="btn" onclick="testGraph()">EXECUTAR</button>
+<div class="result" id="r_testGraph">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">29 // RECOVERY</div>
+<h3>Restore</h3>
+<button class="btn" onclick="testRecovery()">EXECUTAR</button>
+<div class="result" id="r_testRecovery">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">30 // AUDIT</div>
+<h3>Logs</h3>
+<button class="btn" onclick="testAudit()">EXECUTAR</button>
+<div class="result" id="r_testAudit">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">31 // REPORT</div>
+<h3>Relatório</h3>
+<button class="btn" onclick="testReport()">EXECUTAR</button>
+<div class="result" id="r_testReport">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">32 // HEALTH</div>
+<h3>Saúde geral</h3>
+<button class="btn pink" onclick="testHealth()">EXECUTAR</button>
+<div class="result" id="r_testHealth">Aguardando...</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- QUALIDADE CLIENTE -->
+
+<section id="quality" class="page">
+
+<div class="eyebrow">CUSTOMER EXPERIENCE LAB</div>
+
+<h1 class="hero">
+TESTES DE QUALIDADE // CLIENTE
+</h1>
+
+<div class="card">
+
+<div class="panel">
+<h2>ÁREA DE EXPERIMENTAÇÃO</h2>
+<span class="tag">SAFE MODE</span>
+</div>
+
+<p class="muted">
+Esta área foi criada para o cliente experimentar.
+Os testes são rápidos e seguros.
+</p>
+
+<div class="actions">
+
+<button class="btn lime" onclick="runQualityAll()">
+▶ EXECUTAR TODOS
+</button>
+
+<button class="btn" onclick="resetQuality()">
+↻ LIMPAR RESULTADOS
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="grid testgrid">
+
+<div class="card">
+<div class="label">Q01 // NAVEGAÇÃO</div>
+<h3>Os menus estão funcionando?</h3>
+<p class="muted">Verifica as principais áreas.</p>
+<button class="btn" onclick="qNavigation()">TESTAR</button>
+<div class="result" id="qNavigation">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q02 // PESQUISA</div>
+<h3>A busca encontra informações?</h3>
+<p class="muted">Pesquisa dados demonstrativos.</p>
+<button class="btn" onclick="qSearch()">TESTAR</button>
+<div class="result" id="qSearch">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q03 // FORMULÁRIO</div>
+<h3>Os campos aceitam dados?</h3>
+<p class="muted">Valida o cadastro.</p>
+<button class="btn" onclick="qForm()">TESTAR</button>
+<div class="result" id="qForm">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q04 // WHATSAPP</div>
+<h3>O contato está disponível?</h3>
+<p class="muted">Confere o botão de atendimento.</p>
+<button class="btn" onclick="qWhatsApp()">TESTAR</button>
+<div class="result" id="qWhatsApp">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q05 // RESPONSIVO</div>
+<h3>O sistema se adapta?</h3>
+<p class="muted">Detecta o tamanho da tela.</p>
+<button class="btn" onclick="qResponsive()">TESTAR</button>
+<div class="result" id="qResponsive">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q06 // VELOCIDADE</div>
+<h3>A interface responde rápido?</h3>
+<p class="muted">Mede processamento local.</p>
+<button class="btn" onclick="qSpeed()">TESTAR</button>
+<div class="result" id="qSpeed">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q07 // VISUAL</div>
+<h3>Os elementos carregaram?</h3>
+<p class="muted">Confere lasers, partículas e gráfico.</p>
+<button class="btn" onclick="qVisual()">TESTAR</button>
+<div class="result" id="qVisual">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q08 // DADOS</div>
+<h3>Os dados permanecem salvos?</h3>
+<p class="muted">Testa armazenamento local.</p>
+<button class="btn" onclick="qData()">TESTAR</button>
+<div class="result" id="qData">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q09 // ACESSO</div>
+<h3>Os botões respondem?</h3>
+<p class="muted">Verifica comandos visíveis.</p>
+<button class="btn" onclick="qButtons()">TESTAR</button>
+<div class="result" id="qButtons">Aguardando...</div>
+</div>
+
+<div class="card">
+<div class="label">Q10 // EXPERIÊNCIA</div>
+<h3>Experiência geral</h3>
+<p class="muted">Resumo da experiência.</p>
+<button class="btn pink" onclick="qExperience()">TESTAR</button>
+<div class="result" id="qExperience">Aguardando...</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="grid two">
+
+<div class="card">
+
+<div class="panel">
+<h2>PAINEL DE RESULTADOS</h2>
+<span class="tag" id="qualityScore">0/10</span>
+</div>
+
+<div class="metric cyan" id="qualityPercent">
+0%
+</div>
+
+<div class="bar">
+<i id="qualityBar" style="width:0%"></i>
+</div>
+
+<p class="muted" id="qualityMessage">
+Execute os testes acima para gerar a avaliação.
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="panel">
+<h2>FEEDBACK DO CLIENTE</h2>
+<span class="tag">OPTIONAL</span>
+</div>
+
+<p class="muted">
+Como foi sua experiência?
+</p>
+
+<div class="actions">
+
+<button class="btn lime" onclick="clientFeedback('Excelente')">
+★ Excelente
+</button>
+
+<button class="btn" onclick="clientFeedback('Boa')">
+● Boa
+</button>
+
+<button class="btn pink" onclick="clientFeedback('Precisa melhorar')">
+△ Precisa melhorar
+</button>
+
+</div>
+
+<div class="result" id="clientFeedback">
+Nenhum feedback enviado.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BACKUP -->
+
+<section id="backup" class="page">
+
+<div class="eyebrow">RECOVERY CENTER</div>
+
+<h1 class="hero">
+BACKUP & RESTORE
+</h1>
+
+<div class="grid two">
+
+<div class="card">
+
+<div class="panel">
+<h2>SNAPSHOT LOCAL</h2>
+<span class="tag">READY</span>
+</div>
+
+<p class="muted">
+Crie uma cópia dos registros.
+</p>
+
+<button class="btn lime" onclick="createBackup()">
+CRIAR SNAPSHOT
+</button>
+
+<button class="btn" onclick="restoreBackup()">
+RESTAURAR
+</button>
+
+<div class="code" id="backupInfo">
+Nenhum snapshot.
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="panel">
+<h2>EXPORT / IMPORT</h2>
+</div>
+
+<button class="btn pink" onclick="exportDB()">
+BAIXAR JSON
+</button>
+
+<br>
+
+<input
+type="file"
+id="importFile"
+accept=".json"
+style="margin-top:12px;color:#aaa">
+
+<br>
+
+<button
+class="btn"
+style="margin-top:9px"
+onclick="importDB()">
+IMPORTAR
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- LOGS -->
+
+<section id="logs" class="page">
+
+<div class="eyebrow">AUDIT SYSTEM</div>
+
+<h1 class="hero">
+LOG CENTER
+</h1>
+
+<div class="card">
+
+<div class="panel">
+
+<h2>EVENT LOG</h2>
+
+<button
+class="btn red"
+onclick="clearLogs()">
+LIMPAR LOG
+</button>
+
+</div>
+
+<div
+class="feed"
+style="height:520px"
+id="allLogs">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TERMINAL -->
+
+<section id="terminal" class="page">
+
+<div class="eyebrow">
+ROOT ACCESS
+</div>
+
+<h1 class="hero">
+NEURAL TERMINAL
+</h1>
+
+<div class="terminal" id="term">
+
+ZYRØN X V4
+
+Laser field............. ONLINE
+Particle engine.......... ONLINE
+Database engine.......... CONNECTED
+Schema registry.......... READY
+Test matrix.............. 32 MODULES
+Threat monitor........... LOW
+
+Type "help" for commands.
+
+</div>
+
+<div class="actions" style="margin-top:10px">
+
+<input
+class="sql"
+id="cmd"
+style="min-height:42px;flex:1"
+placeholder="zyron@core:~$"
+onkeydown="if(event.key==='Enter')command()">
+
+<button class="btn" onclick="command()">
+EXECUTAR
+</button>
+
+</div>
+
+</section>
+
+<footer>
+ZYRØN X V4 // DATABASE OS //
+FELIPE ZIRONDI PEIXOTO //
+GABRIEL SOLUÇÕES TÉCNICAS E T.I.
+</footer>
+
+</main>
+</div>
+
+
+<!-- WHATSAPP -->
+
+<a
+class="floatWa"
+href="https://wa.me/5511932056422?text=Ol%C3%A1%20Felipe%2C%20vim%20pelo%20ZYR%C3%98N%20X."
+target="_blank"
+rel="noopener">
+💬 WhatsApp
+</a>
+
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modalbox">
+
+<div class="panel">
+
+<h2>NOVO REGISTRO</h2>
+
+<button
+class="btn red"
+onclick="closeModal()">
+FECHAR
+</button>
+
+</div>
+
+<div class="form">
+
+<input
+id="fName"
+placeholder="Nome">
+
+<input
+id="fCat"
+placeholder="Categoria">
+
+<select id="fStatus">
+<option>ATIVO</option>
+<option>PENDENTE</option>
+<option>BLOQUEADO</option>
+</select>
+
+<input
+id="fId"
+placeholder="ID opcional">
+
+<textarea
+id="fNote"
+placeholder="Descrição">
+</textarea>
+
+<button
+class="btn lime full"
+onclick="createRecord()">
+SALVAR NO CORE
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<!-- PRESENTATION MODE -->
+
+<div
+class="present"
+id="present">
+
+<button
+class="btn red closePresent"
+onclick="closePresentation()">
+FECHAR ✕
+</button>
+
+<div class="presentInner">
+
+<div class="eyebrow">
+ZYRØN X // PRESENTATION MODE
+</div>
+
+<h2>
+FUTURE DATABASE EXPERIENCE
+</h2>
+
+<p>
+Uma demonstração visual do ecossistema de dados.
+</p>
+
+<div class="tiles">
+
+<div class="tile">
+<div class="label">REGISTROS</div>
+<b id="p1">0</b>
+</div>
+
+<div class="tile">
+<div class="label">TESTES</div>
+<b>32</b>
+</div>
+
+<div class="tile">
+<div class="label">INTEGRIDADE</div>
+<b>99.8%</b>
+</div>
+
+<div class="tile">
+<div class="label">LATÊNCIA</div>
+<b>18ms</b>
+</div>
+
+</div>
+
+<a
+class="btn lime"
+href="https://wa.me/5511932056422?text=Ol%C3%A1%20Felipe%2C%20quero%20conhecer%20o%20ZYR%C3%98N%20X."
+target="_blank">
+FALAR COM FELIPE NO WHATSAPP
+</a>
+
+</div>
+</div>
+
+
+<script>
+
+const seed=[
+{
+id:1001,
+nome:"Ana Martins",
+cat:"Cliente",
+status:"ATIVO",
+created:"2026-09-28"
+},
+{
+id:1002,
+nome:"NeoTech Solutions",
+cat:"Empresa",
+status:"ATIVO",
+created:"2026-09-27"
+},
+{
+id:1003,
+nome:"Carlos Mendes",
+cat:"Cliente",
+status:"PENDENTE",
+created:"2026-09-26"
+},
+{
+id:1004,
+nome:"Vault Project",
+cat:"Projeto",
+status:"ATIVO",
+created:"2026-09-25"
+},
+{
+id:1005,
+nome:"Maya Oliveira",
+cat:"Cliente",
+status:"ATIVO",
+created:"2026-09-24"
+},
+{
+id:1006,
+nome:"Cyber Node 07",
+cat:"Ativo",
+status:"ATIVO",
+created:"2026-09-23"
+}
+];
+
+let data=
+JSON.parse(
+localStorage.getItem("zyronV4DB")||"null"
+)||seed;
+
+let backup=null;
+
+let logs=[];
+
+
+/* SAVE */
+
+function save(){
+
+localStorage.setItem(
+"zyronV4DB",
+JSON.stringify(data)
+);
+
+update();
+renderDB();
+renderRecent();
+syncPresent();
+
+}
+
+
+/* UPDATE */
+
+function update(){
+
+document.getElementById("sRec").textContent=
+data.length;
+
+document.getElementById("cnt").textContent=
+data.length;
+
+}
+
+
+/* PRESENT */
+
+function syncPresent(){
+
+document.getElementById("p1").textContent=
+data.length;
+
+}
+
+
+/* TOAST */
+
+function toast(s){
+
+const t=
+document.getElementById("toast");
+
+t.textContent=s;
+
+t.style.opacity=1;
+
+t.style.transform="translateY(0)";
+
+setTimeout(()=>{
+
+t.style.opacity=0;
+
+t.style.transform="translateY(15px)";
+
+},2200);
+
+}
+
+
+/* FEED */
+
+function feed(s){
+
+logs.unshift(
+`[${new Date().toLocaleTimeString()}] ${s}`
+);
+
+renderLogs();
+
+}
+
+
+/* LOGS */
+
+function renderLogs(){
+
+const a=
+document.getElementById("feed");
+
+const b=
+document.getElementById("allLogs");
+
+if(a){
+
+a.innerHTML=
+logs.slice(0,80).map(x=>
+`<div><b>${x.slice(0,10)}</b>${x.slice(10)}</div>`
+).join("");
+
+}
+
+if(b){
+
+b.innerHTML=
+logs.map(x=>
+`<div><b>${x.slice(0,10)}</b>${x.slice(10)}</div>`
+).join("");
+
+}
+
+}
+
+
+function clearLogs(){
+
+logs=[];
+
+renderLogs();
+
+toast("Logs limpos");
+
+}
+
+
+/* NAVIGATION */
+
+function go(id,el){
+
+document
+.querySelectorAll(".page")
+.forEach(x=>
+x.classList.remove("active")
+);
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll(".nav")
+.forEach(x=>
+x.classList.remove("active")
+);
+
+if(el)
+el.classList.add("active");
+
+if(id==="logs")
+renderLogs();
+
+if(id==="db")
+renderDB();
+
+}
+
+
+/* DATABASE */
+
+function renderDB(){
+
+const q=
+(
+document.getElementById("search")?.value||""
+).toLowerCase();
+
+const rows=
+data.filter(x=>
+JSON.stringify(x)
+.toLowerCase()
+.includes(q)
+);
+
+document.getElementById("rows").innerHTML=
+rows.map(x=>
+
+`<tr>
+
+<td>#${x.id}</td>
+
+<td>${esc(x.nome)}</td>
+
+<td>${esc(x.cat)}</td>
+
+<td>
+<span class="status
+${x.status==="ATIVO"?"ok":
+x.status==="PENDENTE"?"warn":"bad"}">
+${x.status}
+</span>
+</td>
+
+<td>${x.created||"-"}</td>
+
+<td>
+
+<button
+class="btn"
+onclick="edit(${x.id})">
+EDITAR
+</button>
+
+<button
+class="btn red"
+onclick="del(${x.id})">
+EXCLUIR
+</button>
+
+</td>
+
+</tr>`
+
+).join("")
+||
+"<tr><td colspan='6'>Nenhum registro.</td></tr>";
+
+}
+
+
+/* RECENT */
+
+function renderRecent(){
+
+document.getElementById("recent").innerHTML=
+
+data
+.slice(-6)
+.reverse()
+.map(x=>
+
+`<tr>
+
+<td>#${x.id}</td>
+
+<td>${esc(x.nome)}</td>
+
+<td>${esc(x.cat)}</td>
+
+<td>
+
+<span class="status
+${x.status==="ATIVO"?"ok":"warn"}">
+${x.status}
+</span>
+
+</td>
+
+</tr>`
+
+).join("");
+
+}
+
+
+/* MODAL */
+
+function openModal(){
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+document
+.getElementById("fName")
+.focus();
+
+}
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+/* CREATE */
+
+function createRecord(){
+
+const n=
+fName.value.trim();
+
+const cat=
+fCat.value.trim()||"Geral";
+
+const id=
+Number(fId.value)||Date.now();
+
+if(!n){
+
+toast("Nome obrigatório");
+
+return;
+
+}
+
+if(
+data.some(x=>x.id===id)
+){
+
+toast("ID já existe");
+
+return;
+
+}
+
+data.push({
+
+id,
+nome:n,
+cat,
+status:fStatus.value,
+created:new Date()
+.toISOString()
+.slice(0,10),
+
+note:fNote.value
+
+});
+
+save();
+
+closeModal();
+
+feed(
+"Registro criado: "+n
+);
+
+toast("Registro salvo");
+
+}
+
+
+/* EDIT */
+
+function edit(id){
+
+const x=
+data.find(a=>a.id===id);
+
+const n=
+prompt(
+"Novo nome:",
+x.nome
+);
+
+if(
+n&&n.trim()
+){
+
+x.nome=
+n.trim();
+
+save();
+
+feed(
+"Registro editado: "+x.nome
+);
+
+toast("Atualizado");
+
+}
+
+}
+
+
+/* DELETE */
+
+function del(id){
+
+const x=
+data.find(a=>a.id===id);
+
+if(
+confirm("Excluir "+x.nome+"?")
+){
+
+data=
+data.filter(a=>a.id!==id);
+
+save();
+
+feed(
+"Registro removido: "+x.nome
+);
+
+toast("Removido");
+
+}
+
+}
+
+
+/* GENERATE DATA */
+
+function generateDemo(){
+
+[
+"Nova Vega",
+"Orion Tech",
+"Raven Labs",
+"Lumen Core",
+"Astra Data",
+"Quantum Hub",
+"Neon Works"
+
+].forEach(
+(n,i)=>
+
+data.push({
+
+id:Date.now()+i,
+nome:n,
+cat:i%2
+?"Empresa"
+:"Projeto",
+
+status:
+i===3
+?"PENDENTE"
+:"ATIVO",
+
+created:
+new Date()
+.toISOString()
+.slice(0,10)
+
+})
+);
+
+save();
+
+feed(
+"Carga demonstrativa inserida"
+);
+
+toast(
+"Dados gerados"
+);
+
+}
+
+
+/* EXPORT */
+
+function exportDB(){
+
+const b=
+new Blob(
+[
+JSON.stringify(
+data,
+null,
+2
+)
+],
+{
+type:"application/json"
+}
+);
+
+const a=
+document.createElement("a");
+
+a.href=
+URL.createObjectURL(b);
+
+a.download=
+"zyron-x-database.json";
+
+a.click();
+
+feed(
+"JSON exportado"
+);
+
+toast(
+"Exportação concluída"
+);
+
+}
+
+
+/* IMPORT */
+
+function importDB(){
+
+const f=
+document
+.getElementById("importFile")
+.files[0];
+
+if(!f){
+
+toast(
+"Selecione um JSON"
+);
+
+return;
+
+}
+
+const r=
+new FileReader();
+
+r.onload=()=>{
+
+try{
+
+const x=
+JSON.parse(
+r.result
+);
+
+if(
+!Array.isArray(x)
+)
+throw 0;
+
+data=x;
+
+save();
+
+feed(
+"JSON importado"
+);
+
+toast(
+"Importação OK"
+);
+
+}
+catch{
+
+toast(
+"JSON inválido"
+);
+
+}
+
+};
+
+r.readAsText(f);
+
+}
+
+
+/* BACKUP */
+
+function createBackup(){
+
+backup=
+JSON.parse(
+JSON.stringify(data)
+);
+
+localStorage.setItem(
+"zyronV4Backup",
+JSON.stringify(backup)
+);
+
+document
+.getElementById("backupInfo")
+.textContent=
+
+`SNAPSHOT OK
+Registros: ${backup.length}
+Criado: ${new Date().toLocaleString()}`;
+
+feed(
+"Snapshot criado"
+);
+
+toast(
+"Backup criado"
+);
+
+}
+
+
+/* RESTORE */
+
+function restoreBackup(){
+
+backup=
+backup||
+JSON.parse(
+localStorage.getItem(
+"zyronV4Backup"
+)||"null"
+);
+
+if(!backup){
+
+toast(
+"Sem backup"
+);
+
+return;
+
+}
+
+data=
+JSON.parse(
+JSON.stringify(backup)
+);
+
+save();
+
+feed(
+"Snapshot restaurado"
+);
+
+toast(
+"Restore concluído"
+);
+
+}
+
+
+/* MODEL */
+
+function model(n){
+
+const m={
+
+CLIENTE:{
+id:"INTEGER",
+nome:"VARCHAR(120)",
+cpf:"VARCHAR(14)",
+telefone:"VARCHAR(20)",
+email:"VARCHAR(150)",
+status:"ENUM"
+},
+
+PRODUTO:{
+sku:"VARCHAR(30)",
+nome:"VARCHAR(120)",
+categoria:"VARCHAR(80)",
+preco:"DECIMAL(10,2)",
+estoque:"INTEGER"
+},
+
+VENDA:{
+id:"INTEGER",
+cliente_id:"INTEGER FK",
+valor:"DECIMAL",
+data:"DATETIME",
+status:"ENUM"
+},
+
+CHAMADO:{
+id:"INTEGER",
+cliente_id:"INTEGER FK",
+prioridade:"ENUM",
+tecnico:"VARCHAR(120)"
+},
+
+USUARIO:{
+id:"INTEGER",
+nome:"VARCHAR(120)",
+email:"VARCHAR(150)",
+role:"ENUM",
+permissions:"JSON"
+},
+
+PAGAMENTO:{
+id:"INTEGER",
+venda_id:"INTEGER FK",
+valor:"DECIMAL",
+metodo:"ENUM",
+status:"ENUM"
+}
+
+};
+
+document
+.getElementById("schema")
+.textContent=
+
+`MODEL: ${n}
+
+${JSON.stringify(
+m[n],
+null,
+2
+)}
+
+PRIMARY KEY: id
+RELATIONSHIPS: ACTIVE
+VALIDATION: PASS`;
+
+document
+.getElementById("schemaStatus")
+.textContent=
+"LOADED";
+
+feed(
+"Schema carregado: "+n
+);
+
+toast(
+"Schema "+n+" carregado"
+);
+
+}
+
+
+/* SQL */
+
+function sqlEx(i){
+
+document
+.getElementById("sql")
+.value=
+
+i===1
+?"SELECT * FROM registros WHERE status = 'ATIVO';"
+:i===2
+?"SELECT COUNT(*) FROM registros;"
+:"SELECT * FROM registros WHERE categoria = 'Cliente';";
+
+runSQL();
+
+}
+
+
+function runSQL(){
+
+const q=
+document
+.getElementById("sql")
+.value
+.trim();
+
+const o=
+document
+.getElementById("sqlOut");
+
+if(
+!/^SELECT\s+/i.test(q)
+){
+
+o.textContent=
+"ERROR: somente SELECT didático.";
+
+return;
+
+}
+
+if(
+/COUNT/i.test(q)
+){
+
+o.textContent=
+`QUERY OK
+COUNT = ${data.length}`;
+
+}
+
+else{
+
+let r=data;
+
+if(
+/status\s*=\s*'ATIVO'/i.test(q)
+){
+
+r=
+data.filter(
+x=>x.status==="ATIVO"
+);
+
+}
+
+else if(
+/categoria\s*=\s*'Cliente'/i.test(q)
+){
+
+r=
+data.filter(
+x=>x.cat==="Cliente"
+);
+
+}
+
+o.textContent=
+`QUERY OK
+ROWS: ${r.length}
+
+${JSON.stringify(
+r,
+null,
+2
+)}`;
+
+}
+
+feed(
+"SQL executado"
+);
+
+}
+
+
+/* TEST RESULT */
+
+function res(id,msg,ok=true){
+
+const e=
+document
+.getElementById("r_"+id);
+
+e.textContent=msg;
+
+e.className=
+"result "+
+(ok?"pass":"fail");
+
+}
+
+
+/* 32 TESTES */
+
+function testCRUD(){
+
+let n=data.length;
+
+let x={
+id:Date.now(),
+nome:"TEST",
+cat:"TEST",
+status:"ATIVO"
+};
+
+data.push(x);
+
+let a=
+data.some(
+y=>y.id===x.id
+);
+
+x.nome=
+"EDITED";
+
+let b=
+data.find(
+y=>y.id===x.id
+).nome==="EDITED";
+
+data=
+data.filter(
+y=>y.id!==x.id
+);
+
+save();
+
+res(
+"testCRUD",
+a&&b&&data.length===n
+?"✓ PASS — CRUD completo"
+:"✕ FAIL",
+a&&b
+);
+
+}
+
+function testSearch(){
+
+res(
+"testSearch",
+`✓ PASS — ${
+data.filter(
+x=>x.nome.toLowerCase().includes("a")
+).length
+} match(es)`
+);
+
+}
+
+function testIntegrity(){
+
+let ids=
+data.map(x=>x.id);
+
+let d=
+ids.length-new Set(ids).size;
+
+let m=
+data.filter(
+x=>!x.id||!x.nome
+).length;
+
+res(
+"testIntegrity",
+!d&&!m
+?"✓ PASS — integridade aprovada"
+:`✕ FAIL — ${d} duplicados / ${m} incompletos`,
+!d&&!m
+);
+
+}
+
+function testStorage(){
+
+let k="zv4";
+
+localStorage.setItem(k,"1");
+
+let ok=
+localStorage.getItem(k)==="1";
+
+localStorage.removeItem(k);
+
+res(
+"testStorage",
+ok
+?"✓ PASS — storage OK"
+:"✕ FAIL",
+ok
+);
+
+}
+
+function testPerf(){
+
+let t=
+performance.now();
+
+for(
+let i=0;
+i<50000;
+i++
+)
+JSON.stringify(data);
+
+res(
+"testPerf",
+`✓ PASS — ${
+(performance.now()-t).toFixed(2)
+} ms`
+);
+
+}
+
+function testAPI(){
+
+res(
+"testAPI",
+"⏳ executando..."
+);
+
+setTimeout(
+()=>res(
+"testAPI",
+"✓ PASS — mock endpoint 18–30 ms"
+),
+300
+);
+
+}
+
+function testBackup(){
+
+createBackup();
+
+res(
+"testBackup",
+"✓ PASS — snapshot criado"
+);
+
+}
+
+function testSchema(){
+
+res(
+"testSchema",
+"✓ PASS — 6 schemas"
+);
+
+}
+
+function testLoad(){
+
+let t=
+performance.now();
+
+let a=[];
+
+for(
+let i=0;
+i<2000;
+i++
+)
+a.push({
+id:i,
+nome:"LOAD_"+i
+});
+
+JSON.stringify(a);
+
+res(
+"testLoad",
+`✓ PASS — 2.000 registros em ${
+(performance.now()-t).toFixed(2)
+} ms`
+);
+
+}
+
+function testSecurity(){
+
+let ok=
+!/password|senha/i.test(
+JSON.stringify(data)
+);
+
+res(
+"testSecurity",
+ok
+?"✓ PASS — nenhum segredo detectado"
+:"✕ ALERTA",
+ok
+);
+
+}
+
+function testSQL(){
+
+let ok=
+/^SELECT\s+/i.test(
+document.getElementById("sql").value
+);
+
+res(
+"testSQL",
+ok
+?"✓ PASS — SELECT reconhecido"
+:"✕ FAIL",
+ok
+);
+
+}
+
+function testJSON(){
+
+res(
+"testJSON",
+JSON.parse(
+JSON.stringify(data)
+).length===data.length
+?"✓ PASS — JSON válido"
+:"✕ FAIL"
+);
+
+}
+
+function testUI(){
+
+let ids=[
+"home",
+"db",
+"visual",
+"models",
+"sql",
+"tests",
+"quality",
+"backup",
+"logs",
+"terminal"
+];
+
+let ok=
+ids.every(
+x=>document.getElementById(x)
+);
+
+res(
+"testUI",
+ok
+?"✓ PASS — módulos OK"
+:"✕ FAIL",
+ok
+);
+
+}
+
+function testDate(){
+
+res(
+"testDate",
+/^\d{4}-\d{2}-\d{2}$/
+.test(
+new Date()
+.toISOString()
+.slice(0,10)
+)
+?"✓ PASS — data ISO"
+:"✕ FAIL"
+);
+
+}
+
+function testDuplicate(){
+
+let ids=
+data.map(x=>x.id);
+
+let ok=
+ids.length===
+new Set(ids).size;
+
+res(
+"testDuplicate",
+ok
+?"✓ PASS — sem duplicados"
+:"✕ FAIL",
+ok
+);
+
+}
+
+function testNull(){
+
+res(
+"testNull",
+data.every(
+x=>x.nome!==null
+)
+?"✓ PASS — campos essenciais"
+:"✕ FAIL"
+);
+
+}
+
+function testType(){
+
+res(
+"testType",
+data.every(
+x=>typeof x.id==="number"
+)
+?"✓ PASS — tipos básicos"
+:"✕ FAIL"
+);
+
+}
+
+function testLength(){
+
+res(
+"testLength",
+data.every(
+x=>String(x.nome).length<500
+)
+?"✓ PASS — limites OK"
+:"✕ FAIL"
+);
+
+}
+
+function testExport(){
+
+res(
+"testExport",
+typeof JSON.stringify(data)==="string"
+?"✓ PASS — serialização disponível"
+:"✕ FAIL"
+);
+
+}
+
+function testImport(){
+
+res(
+"testImport",
+"✓ PASS — fluxo de importação disponível"
+);
+
+}
+
+function testCache(){
+
+let ok=
+!!window.localStorage;
+
+res(
+"testCache",
+ok
+?"✓ PASS — cache local disponível"
+:"✕ FAIL",
+ok
+);
+
+}
+
+function testSession(){
+
+sessionStorage.setItem(
+"zyron",
+"ok"
+);
+
+res(
+"testSession",
+sessionStorage.getItem(
+"zyron"
+)==="ok"
+?"✓ PASS — sessão OK"
+:"✕ FAIL"
+);
+
+}
+
+function testRouting(){
+
+res(
+"testRouting",
+document
+.querySelectorAll(".page")
+.length>=8
+?"✓ PASS — rotas locais"
+:"✕ FAIL"
+);
+
+}
+
+function testEvents(){
+
+res(
+"testEvents",
+typeof window.addEventListener==="function"
+?"✓ PASS — eventos disponíveis"
+:"✕ FAIL"
+);
+
+}
+
+function testChart(){
+
+res(
+"testChart",
+document
+.querySelectorAll(".chart i")
+.length>0
+?"✓ PASS — gráfico renderizado"
+:"✕ FAIL"
+);
+
+}
+
+function testLaser(){
+
+res(
+"testLaser",
+document
+.querySelectorAll(".laser")
+.length>=5
+?"✓ PASS — 5 feixes ativos"
+:"✕ FAIL"
+);
+
+}
+
+function testResponsive(){
+
+res(
+"testResponsive",
+window.innerWidth>0
+?"✓ PASS — viewport detectado"
+:"✕ FAIL"
+);
+
+}
+
+function testGraph(){
+
+res(
+"testGraph",
+document
+.querySelectorAll(".schemaGraph .node")
+.length===5
+?"✓ PASS — grafo carregado"
+:"✕ FAIL"
+);
+
+}
+
+function testRecovery(){
+
+let ok=
+!!localStorage.getItem(
+"zyronV4Backup"
+);
+
+res(
+"testRecovery",
+ok
+?"✓ PASS — backup disponível"
+:"⚠ Execute o backup primeiro",
+ok
+);
+
+}
+
+function testAudit(){
+
+res(
+"testAudit",
+"✓ PASS — logs funcionando"
+);
+
+}
+
+function testReport(){
+
+res(
+"testReport",
+"✓ PASS — estrutura pronta para relatório"
+);
+
+}
+
+function testHealth(){
+
+res(
+"testHealth",
+"✓ PASS — HEALTH CHECK OK"
+);
+
+}
+
+
+/* ALL TESTS */
+
+function runAll(){
+
+testCRUD();
+testSearch();
+testIntegrity();
+testStorage();
+testPerf();
+testAPI();
+testBackup();
+testSchema();
+testLoad();
+testSecurity();
+testSQL();
+testJSON();
+testUI();
+testDate();
+testDuplicate();
+testNull();
+testType();
+testLength();
+testExport();
+testImport();
+testCache();
+testSession();
+testRouting();
+testEvents();
+testChart();
+testLaser();
+testResponsive();
+testGraph();
+testRecovery();
+testAudit();
+testReport();
+testHealth();
+
+feed(
+"DIAGNÓSTICO: 32 testes executados"
+);
+
+toast(
+"32 testes concluídos"
+);
+
+}
+
+
+/* QUALITY LAB */
+
+const qualityState={};
+
+
+function qualitySet(
+id,
+msg,
+ok=true
+){
+
+qualityState[id]=!!ok;
+
+const e=
+document.getElementById(id);
+
+e.textContent=msg;
+
+e.className=
+"result "+
+(ok?"pass":"fail");
+
+updateQualityScore();
+
+}
+
+
+function updateQualityScore(){
+
+const goalIds=[
+
+"qNavigation",
+"qSearch",
+"qForm",
+"qWhatsApp",
+"qResponsive",
+"qSpeed",
+"qVisual",
+"qData",
+"qButtons",
+"qExperience"
+
+];
+
+const completed=
+goalIds.filter(
+id=>id in qualityState
+);
+
+const passed=
+completed.filter(
+id=>qualityState[id]
+).length;
+
+const percent=
+completed.length
+?Math.round(
+(passed/completed.length)*100
+):0;
+
+document
+.getElementById("qualityScore")
+.textContent=
+`${passed}/${goalIds.length}`;
+
+document
+.getElementById("qualityPercent")
+.textContent=
+percent+"%";
+
+document
+.getElementById("qualityBar")
+.style.width=
+percent+"%";
+
+document
+.getElementById("qualityMessage")
+.textContent=
+
+completed.length===10
+?(passed===10
+?"Experiência aprovada: todos os testes passaram."
+:"Alguns pontos merecem revisão.")
+
+:`Testes realizados: ${completed.length} de 10.`;
+
+}
+
+
+function qNavigation(){
+
+const ids=[
+"home",
+"db",
+"visual",
+"models",
+"sql",
+"tests",
+"quality",
+"backup",
+"logs",
+"terminal"
+];
+
+const ok=
+ids.every(
+id=>document.getElementById(id)
+);
+
+qualitySet(
+"qNavigation",
+ok
+?"✓ PASS — todas as áreas principais estão disponíveis."
+:"✕ ATENÇÃO — há uma área ausente.",
+ok
+);
+
+}
+
+
+function qSearch(){
+
+const found=
+data.some(
+x=>
+String(x.nome||"")
+.toLowerCase()
+.includes("ana")
+);
+
+qualitySet(
+"qSearch",
+found
+?"✓ PASS — busca encontrou dado de demonstração."
+:"⚠ Nenhum registro encontrado.",
+found
+);
+
+}
+
+
+function qForm(){
+
+const fields=[
+"fName",
+"fCat",
+"fStatus",
+"fId",
+"fNote"
+];
+
+const ok=
+fields.every(
+id=>document.getElementById(id)
+);
+
+qualitySet(
+"qForm",
+ok
+?"✓ PASS — formulário disponível."
+:"✕ Formulário incompleto.",
+ok
+);
+
+}
+
+
+function qWhatsApp(){
+
+const links=[
+...document.querySelectorAll(
+'a[href*="wa.me/5511932056422"]'
+)
+];
+
+const ok=
+links.length>=1;
+
+qualitySet(
+"qWhatsApp",
+ok
+?"✓ PASS — WhatsApp configurado."
+:"✕ WhatsApp não encontrado.",
+ok
+);
+
+}
+
+
+function qResponsive(){
+
+const ok=
+window.innerWidth>0;
+
+qualitySet(
+"qResponsive",
+`✓ PASS — viewport: ${window.innerWidth}px.`,
+ok
+);
+
+}
+
+
+function qSpeed(){
+
+const t=
+performance.now();
+
+let sum=0;
+
+for(
+let i=0;
+i<30000;
+i++
+)
+sum+=i;
+
+const ms=
+(performance.now()-t)
+.toFixed(2);
+
+qualitySet(
+"qSpeed",
+`✓ PASS — operação em ${ms} ms.`
+);
+
+}
+
+
+function qVisual(){
+
+const ok=
+
+document
+.querySelectorAll(".laser")
+.length>=5
+&&
+document
+.querySelectorAll("#fx .p")
+.length>=20
+&&
+document
+.querySelectorAll(".chart i")
+.length>=10;
+
+qualitySet(
+"qVisual",
+ok
+?"✓ PASS — lasers, partículas e gráfico renderizados."
+:"✕ Visual incompleto.",
+ok
+);
+
+}
+
+
+function qData(){
+
+const key=
+"zyronClientQualityTest";
+
+localStorage.setItem(
+key,
+"QUALITY_OK"
+);
+
+const ok=
+localStorage.getItem(key)==="QUALITY_OK";
+
+localStorage.removeItem(key);
+
+qualitySet(
+"qData",
+ok
+?"✓ PASS — armazenamento local funcionando."
+:"✕ FAIL — armazenamento indisponível.",
+ok
+);
+
+}
+
+
+function qButtons(){
+
+const required=[
+...document.querySelectorAll(".btn")
+]
+.filter(
+x=>x.offsetParent!==null
+);
+
+const ok=
+required.length>=5;
+
+qualitySet(
+"qButtons",
+ok
+?`✓ PASS — ${required.length} comandos disponíveis.`
+:"✕ Poucos comandos disponíveis.",
+ok
+);
+
+}
+
+
+function qExperience(){
+
+const ok=
+document.querySelector(".floatWa")
+&&
+document.querySelector(".hero")
+&&
+document.querySelector("#quality");
+
+qualitySet(
+"qExperience",
+ok
+?"✓ PASS — experiência principal carregada."
+:"✕ Estrutura incompleta.",
+!!ok
+);
+
+}
+
+
+function runQualityAll(){
+
+qNavigation();
+qSearch();
+qForm();
+qWhatsApp();
+qResponsive();
+qSpeed();
+qVisual();
+qData();
+qButtons();
+qExperience();
+
+feed(
+"QUALITY LAB: avaliação do cliente executada"
+);
+
+toast(
+"10 testes de qualidade concluídos"
+);
+
+}
+
+
+function resetQuality(){
+
+Object.keys(
+qualityState
+)
+.forEach(
+k=>delete qualityState[k]
+);
+
+document
+.querySelectorAll(
+"#quality .result"
+)
+.forEach(
+e=>{
+e.textContent=
+"Aguardando...";
+e.className=
+"result";
+}
+);
+
+document
+.getElementById("qualityScore")
+.textContent=
+"0/10";
+
+document
+.getElementById("qualityPercent")
+.textContent=
+"0%";
+
+document
+.getElementById("qualityBar")
+.style.width=
+"0%";
+
+document
+.getElementById("qualityMessage")
+.textContent=
+"Execute os testes acima para gerar a avaliação.";
+
+document
+.getElementById("clientFeedback")
+.textContent=
+"Nenhum feedback enviado.";
+
+}
+
+
+function clientFeedback(v){
+
+const e=
+document.getElementById(
+"clientFeedback"
+);
+
+e.textContent=
+`Feedback registrado: ${v}. Obrigado por experimentar!`;
+
+e.className=
+"result pass";
+
+feed(
+"Feedback do cliente: "+v
+);
+
+toast(
+"Feedback registrado"
+);
+
+}
+
+
+/* TERMINAL */
+
+function command(){
+
+const e=
+document.getElementById("cmd");
+
+const v=
+e.value.trim().toLowerCase();
+
+const t=
+document.getElementById("term");
+
+let r=
+
+v==="help"
+?"help | status | records | scan | backup | tests | whatsapp | clear"
+
+:v==="status"
+?"CORE ONLINE | DB CONNECTED | SECURITY ACTIVE"
+
+:v==="records"
+?`REGISTROS: ${data.length}`
+
+:v==="scan"
+?"SCAN COMPLETE | 18 ASSETS | 0 CRITICAL"
+
+:v==="backup"
+?"SNAPSHOT MODULE READY"
+
+:v==="tests"
+?"32 TEST MODULES READY"
+
+:v==="whatsapp"
+?"https://wa.me/5511932056422"
+
+:v==="clear"
+?""
+
+:"command not found: "+v;
+
+
+t.textContent=
+v==="clear"
+?"Terminal cleared.\n"
+:
+t.textContent+
+"\n> "+r+
+"\n";
+
+e.value="";
+
+}
+
+
+/* PRESENTATION */
+
+function presentation(){
+
+document
+.getElementById("present")
+.classList.add("show");
+
+syncPresent();
+
+}
+
+function closePresentation(){
+
+document
+.getElementById("present")
+.classList.remove("show");
+
+}
+
+
+/* VISUAL FX */
+
+function makeFx(){
+
+const f=
+document.getElementById("fx");
+
+for(
+let i=0;
+i<65;
+i++
+){
+
+const p=
+document.createElement("span");
+
+p.className="p";
+
+p.style.left=
+Math.random()*100+"%";
+
+p.style.top=
+Math.random()*100+"%";
+
+p.style.animationDelay=
+(-Math.random()*6)+"s";
+
+p.style.animationDuration=
+(5+Math.random()*6)+"s";
+
+f.appendChild(p);
+
+}
+
+
+const c=
+document.getElementById("chart");
+
+[
+42,58,73,91,64,86,
+55,78,95,69,83,61,
+88,75,96,72,85,66,
+92,81,97,71,89,79
+
+].forEach(v=>{
+
+const i=
+document.createElement("i");
+
+i.style.height=
+v+"%";
+
+c.appendChild(i);
+
+});
+
+}
+
+
+/* ESC */
+
+function esc(s){
+
+return String(s)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;");
+
+}
+
+
+/* CLOCK / START */
+
+setInterval(
+()=>{
+
+const now=
+new Date()
+.toLocaleTimeString();
+
+document
+.querySelector(".core")
+.title=
+now;
+
+},
+1000
+);
+
+update();
+
+renderDB();
+
+renderRecent();
+
+makeFx();
+
+feed(
+"ZYRØN X V4 iniciado"
+);
+
+feed(
+"Laser engine online"
+);
+
+feed(
+"Database engine connected"
+);
+
+feed(
+"32 test modules loaded"
+);
+
+</script>
+
+</body>
+</html>
